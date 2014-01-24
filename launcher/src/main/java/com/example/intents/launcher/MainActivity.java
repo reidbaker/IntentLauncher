@@ -1,28 +1,33 @@
 package com.example.intents.launcher;
 
 import android.app.Activity;
-import android.app.ActionBar;
-import android.app.Fragment;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.os.Build;
+import android.widget.Toast;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements View.OnClickListener{
+
+    private View mGetImage;
+    private View mEditImage;
+
+    private final static int REQUEST_CODE_PICK_IMAGE = 1;
+
+    Uri mUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mGetImage = findViewById(R.id.get_image);
+        mGetImage.setOnClickListener(this);
+        mEditImage = findViewById(R.id.edit_image);
+        mEditImage.setOnClickListener(this);
 
-        if (savedInstanceState == null) {
-            getFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
-                    .commit();
-        }
     }
 
 
@@ -46,20 +51,42 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            return rootView;
+    @Override
+    public void onClick(View v) {
+        if(v.getId() == mGetImage.getId()){
+            getImage();
+        } else if (v.getId() == mEditImage.getId()) {
+            editImage();
         }
     }
 
+    private void getImage() {
+        Toast.makeText(this, "get image", Toast.LENGTH_SHORT).show();
+        Intent getImageContent = new Intent(Intent.ACTION_GET_CONTENT);
+        getImageContent.setType("image/*");
+        Intent selector = Intent.createChooser(getImageContent, "Select Picture");
+        startActivityForResult(selector, REQUEST_CODE_PICK_IMAGE);
+    }
+
+    private void editImage() {
+        Toast.makeText(this, "edit image", Toast.LENGTH_SHORT).show();
+        PackageManager pm = getPackageManager();
+        if (pm != null) {
+            Intent sendIntent = pm.getLaunchIntentForPackage("com.evernote.skitch");
+            if (sendIntent != null) {
+                sendIntent.setDataAndType(mUri, "image/*");
+                sendIntent.setAction(Intent.ACTION_EDIT);
+                startActivity(sendIntent);
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        mUri = null;
+        if (intent != null) {
+            mUri = intent.getData();
+        }
+        super.onActivityResult(requestCode, resultCode, intent);
+    }
 }
