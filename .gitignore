@@ -30,6 +30,7 @@ proguard/
 
 # Android Studio files
 .idea/
+*.iml
 
 # Emacs temp files
 *~
