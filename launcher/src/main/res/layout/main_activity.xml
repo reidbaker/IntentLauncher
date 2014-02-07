@@ -23,6 +23,14 @@
             style="@style/button"
         />
         <TextView
+            android:id="@+id/save_image"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/save_image"
+            android:layout_weight="1"
+            style="@style/button"
+        />
+        <TextView
             android:id="@+id/send_image"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

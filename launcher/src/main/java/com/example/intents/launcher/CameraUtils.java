@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 
@@ -11,7 +12,7 @@ import java.io.File;
 
 public class CameraUtils {
 
-    public static void addPhotoToMediaStore(Context context, Uri uri) {
+    public static void addPhotoToMediaStoreSynchronously(Context context, Uri uri) {
         MediaScannerConnection.scanFile(context, new String[]{uri.getPath()}, new String[]{"image/*"},
                 new MediaScannerConnection.OnScanCompletedListener() {
                     public void onScanCompleted(String path, Uri uri) {
@@ -28,7 +29,7 @@ public class CameraUtils {
         PackageManager pm = context.getPackageManager();
         if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
             return true;
-        } else if (android.os.Build.VERSION.SDK_INT >= 9) {
+        } else if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
             return pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_FRONT);
         } else {
             return false;

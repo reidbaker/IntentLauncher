@@ -5,6 +5,8 @@
     <string name="action_settings">Settings</string>
     <string name="get_image">Take photo</string>
     <string name="send_image">Send Image</string>
+    <string name="save_image">Save</string>
+    <string name="save_image_success">Saved!</string>
     <string name="no_pic_captured">No pictures captured</string>
     <string name="no_capture_activity_found">No activity found to capture pictures</string>
     <string name="feature_unavailable">Your device doesn\'t support this feature.</string>

@@ -19,6 +19,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
     private View mTakePhoto;
     private View mSendImage;
+    private View mSaveImage;
 
     private final static int REQUEST_CODE_TAKE_PHOTO = 1;
 
@@ -41,6 +42,9 @@ public class MainActivity extends Activity implements View.OnClickListener{
         mSendImage = findViewById(R.id.send_image);
         mSendImage.setOnClickListener(this);
 
+        mSaveImage = findViewById(R.id.save_image);
+        mSaveImage.setOnClickListener(this);
+
         //If this is not the first time we launched then get the photo file
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(PHOTO_KEY)) {
@@ -56,6 +60,13 @@ public class MainActivity extends Activity implements View.OnClickListener{
             takePhoto();
         } else if (v.getId() == mSendImage.getId()) {
             sendImage();
+        } else if (v.getId() == mSaveImage.getId()) {
+            if(mPhotoFile != null) {
+                CameraUtils.addPhotoToMediaStoreSynchronously(this, Uri.fromFile(mPhotoFile));
+                Toast.makeText(this, getString(R.string.save_image_success), Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, getString(R.string.no_pic_captured), Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -112,9 +123,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
         if (resultCode == Activity.RESULT_CANCELED && requestCode == REQUEST_CODE_TAKE_PHOTO)
             CameraUtils.removeTemporaryPhotoFile(mPhotoFile);
         else if(resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_TAKE_PHOTO) {
-            //Converts java.net.uri to android.net uri
-            CameraUtils.addPhotoToMediaStore(this, Uri.fromFile(mPhotoFile));
-
             setImageView(mPhotoFile);
         }
         super.onActivityResult(requestCode, resultCode, intent);
