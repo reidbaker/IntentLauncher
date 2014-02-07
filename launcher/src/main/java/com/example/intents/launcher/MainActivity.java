@@ -24,7 +24,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private final static int REQUEST_CODE_TAKE_PHOTO = 1;
 
     public final static String DEFAULT_IMAGE_DIR = "/Launcher_Images/";
-    public final static String DEFAULT_IMAGE_NAME = "image.tmp";
+    public final static String DEFAULT_IMAGE_NAME = "image.jpg";
 
     private static final String PHOTO_KEY = "photo_key";
 
@@ -96,8 +96,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
         }
 
         Intent cameraIntent = new Intent();
-        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mPhotoFile));
         cameraIntent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mPhotoFile));
 
         try {
             startActivityForResult(cameraIntent, REQUEST_CODE_TAKE_PHOTO);
@@ -108,12 +108,16 @@ public class MainActivity extends Activity implements View.OnClickListener{
     }
 
     private void sendImage() {
-        Toast.makeText(this, R.string.send_image, Toast.LENGTH_SHORT).show();
+        if (mPhotoFile == null) {
+            Toast.makeText(this, getString(R.string.no_pic_captured), Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         Intent sendIntent = new Intent(Intent.ACTION_SEND);
         sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(mPhotoFile));
         sendIntent.setType("image/*");
-        Intent selector = Intent.createChooser(sendIntent, getString(R.id.send_image));
+        //Might have issue on kitkat aka 4.4 http://stackoverflow.com/questions/19827280/on-android-api-19-4-4-the-intent-createchooser-method-causes-intentserviceleak
+        Intent selector = Intent.createChooser(sendIntent, getString(R.string.send_image));
         startActivity(selector);
 
     }
