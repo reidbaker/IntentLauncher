@@ -15,7 +15,7 @@
         android:layout_weight=".1"
         >
         <TextView
-            android:id="@+id/get_image"
+            android:id="@+id/take_photo"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/get_image"
@@ -23,10 +23,10 @@
             style="@style/button"
         />
         <TextView
-            android:id="@+id/edit_image"
+            android:id="@+id/send_image"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/edit_image"
+            android:text="@string/send_image"
             android:layout_weight="1"
             style="@style/button"
         />

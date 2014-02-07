@@ -17,11 +17,10 @@ import java.io.File;
 
 public class MainActivity extends Activity implements View.OnClickListener{
 
-    private View mGetImage;
-    private View mEditImage;
+    private View mTakePhoto;
+    private View mSendImage;
 
     private final static int REQUEST_CODE_TAKE_PHOTO = 1;
-    private final static int REQUEST_CODE_EDIT_PHOTO = 2;
 
     public final static String DEFAULT_IMAGE_DIR = "/Launcher_Images/";
     public final static String DEFAULT_IMAGE_NAME = "image.tmp";
@@ -36,11 +35,11 @@ public class MainActivity extends Activity implements View.OnClickListener{
         //Tell's the activity how to layout the visuals
         setContentView(R.layout.main_activity); // File located in res/layout
 
-        mGetImage = findViewById(R.id.get_image);
-        mGetImage.setOnClickListener(this);
+        mTakePhoto = findViewById(R.id.take_photo);
+        mTakePhoto.setOnClickListener(this);
 
-        mEditImage = findViewById(R.id.edit_image);
-        mEditImage.setOnClickListener(this);
+        mSendImage = findViewById(R.id.send_image);
+        mSendImage.setOnClickListener(this);
 
         //If this is not the first time we launched then get the photo file
         if (savedInstanceState != null) {
@@ -53,10 +52,10 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
-        if(v.getId() == mGetImage.getId()){
-            getImage();
-        } else if (v.getId() == mEditImage.getId()) {
-            editImage();
+        if(v.getId() == mTakePhoto.getId()){
+            takePhoto();
+        } else if (v.getId() == mSendImage.getId()) {
+            sendImage();
         }
     }
 
@@ -70,7 +69,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
         }
     }
 
-    private void getImage() {
+    private void takePhoto() {
         if (!CameraUtils.hasCamera(this)) {
             Toast.makeText(this, R.string.feature_unavailable, Toast.LENGTH_SHORT).show();
             return;
@@ -97,13 +96,13 @@ public class MainActivity extends Activity implements View.OnClickListener{
         }
     }
 
-    private void editImage() {
-        Toast.makeText(this, R.string.edit_image, Toast.LENGTH_SHORT).show();
+    private void sendImage() {
+        Toast.makeText(this, R.string.send_image, Toast.LENGTH_SHORT).show();
 
-        Intent editImage = new Intent(Intent.ACTION_SEND);
-        editImage.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(mPhotoFile));
-        editImage.setType("image/jpeg");
-        Intent selector = Intent.createChooser(editImage, getString(R.id.edit_image));
+        Intent sendIntent = new Intent(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(mPhotoFile));
+        sendIntent.setType("image/*");
+        Intent selector = Intent.createChooser(sendIntent, getString(R.id.send_image));
         startActivity(selector);
 
     }
@@ -118,11 +117,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
             setImageView(mPhotoFile);
         }
-
-        if(resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_EDIT_PHOTO) {
-            Toast.makeText(this, getString(R.string.edit_image) + "success", Toast.LENGTH_SHORT).show();
-        }
-
         super.onActivityResult(requestCode, resultCode, intent);
     }
 
